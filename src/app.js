@@ -1,6 +1,7 @@
-import { express } from "express";  
+import express from "express";  
 import cors from "cors"
 import cookieParser from "cookie-parser"
+
 const app = express();
 
 app.use(cors({
@@ -18,5 +19,12 @@ app.use(cookieParser()) //for secure crud operation
 //next() is a flag 
 
 
+//routes
+import userRouter from './routes/user.routes.js'
 
-export { app }
+
+
+//routes declaration
+app.use("/api/v1/users",userRouter)  //user became prefix  // and manchaha naaam tabhi de sakte hai jab export default huwa ho
+
+export default app
