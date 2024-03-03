@@ -14,7 +14,7 @@ class ApiError extends Error {
             this.errors=errors
 
 
-            //this part will remmove when we move to production . 
+            //this part will remove when we move to production . 
             // for stack-traces this below code is written .
             if(stack){
                 this.stack = stack

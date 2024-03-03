@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors"
 import cookieParser from "cookie-parser"
 
+
 const app = express();
 
 app.use(cors({
@@ -21,8 +22,6 @@ app.use(cookieParser()) //for secure crud operation
 
 //routes
 import userRouter from './routes/user.routes.js'
-
-
 
 //routes declaration
 app.use("/api/v1/users",userRouter)  //user became prefix  // and manchaha naaam tabhi de sakte hai jab export default huwa ho
