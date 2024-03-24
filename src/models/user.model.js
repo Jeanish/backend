@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import Jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 const userSchema = new Schema(
@@ -50,7 +50,7 @@ const userSchema = new Schema(
   {
     timestamps: true,
   }
-);
+)
 
 userSchema.pre("save", async function (next) {
   //it takes times and it is middleware
@@ -58,7 +58,7 @@ userSchema.pre("save", async function (next) {
 
   this.password =await bcrypt.hash(this.password,10); //now here one prb created is that if user save the pwd will encrypted but when user will upate anything then also password will encrypt so if condition
   next();
-}); //here in pre don't write arrow function callback bcoz it create prb context nahi pata hoga this keyword ko means previous value
+}) //here in pre don't write arrow function callback bcoz it create prb context nahi pata hoga this keyword ko means previous value
 
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
@@ -66,7 +66,7 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 
 //
 userSchema.methods.generateAccessToken = function () {
-  return Jwt.sign(
+  return jwt.sign(
     {
       _id: this._id,
       email: this.email,
@@ -77,10 +77,10 @@ userSchema.methods.generateAccessToken = function () {
     {
       expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
     }
-  );
-};
+  )
+}
 userSchema.methods.generateRefreshToken = function () {
-  return Jwt.sign(
+  return jwt.sign(
     {
       _id: this._id,
     },
