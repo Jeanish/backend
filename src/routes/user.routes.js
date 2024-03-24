@@ -18,7 +18,7 @@ router.route("/register").post(
     registerUser)  //now localhost:3000/api/v1/users/register/
 
 router.route("/login").post(loginUser)
-// secured route 
-router.route("/logout").post(verifyJWT,logoutUser)
+// secured route
+router.route("/logout").post(verifyJWT,  logoutUser)
 
 export default router
