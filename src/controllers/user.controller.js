@@ -4,8 +4,10 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import fs from "fs"
 
 //Generate access and refresh token
+
 const generateAccessAndRefreshTokens = async(userId) => {
   try {
     const user = await User.findById(userId);
@@ -50,6 +52,7 @@ const registerUser = asyncHandler(async (req, res) => {
   ) {
     throw new ApiError(400, "All fields required");
   }
+  // console.log(email)
 
   const existedUser = await User.findOne({
     $or: [{ username }, { email }],
@@ -60,16 +63,16 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(409, "User with email or username is already existed");
   }
   // multer give access of req.files
-  const avatarLocalPath = req.files?.avatar[0]?.path;
+  const avatarLocalPath = req.files?.avatar[0]?.path;  // console.log(avatarLocalPath);
   let coverImageLocalPath;
   // const coverImageLocalPath = req.files?.coverImage[0]?.path;
-  // console.log(avatarLocalPath)
+  console.log(avatarLocalPath)
 
   if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length >0){
     coverImageLocalPath = req.files.coverImage[0].path
   }
 
-  if (!avatarLocalPath) {
+  if(!avatarLocalPath) {
     throw new ApiError(400, "Avatar is required");
   }
 
@@ -236,8 +239,10 @@ const changeCurrentUserPassword = asyncHandler(async (req,res)=>{
   // if(!(newPassword === confirmPassword)){
   //   throw new ApiError(402,"Password is not matched")
   // }
-  const user = await User.findById(req.iser?._id)
+  const user = await User.findById(req.user?._id)
+  
   const isPasswordCorrect =  await user.isPasswordCorrect(oldPassword)
+  console.log(isPasswordCorrect)
 
  if(!isPasswordCorrect){
   throw new ApiError(401,"Invalid old password")
@@ -251,7 +256,7 @@ const changeCurrentUserPassword = asyncHandler(async (req,res)=>{
 })
 
 const getCurrentUser = asyncHandler(async(req,res)=>{
-  return res.status(200).json(200,req.user,"current user fetched sccessfully")
+  return res.status(200).json(new ApiResponse(200,req.user,"current user fetched sccessfully"))
 })
 
 const updateAccountDetails = asyncHandler(async(req,res)=>{
@@ -275,7 +280,11 @@ const updateAccountDetails = asyncHandler(async(req,res)=>{
 
 const updateUserAvatar = asyncHandler(async(req,res)=>{
   const avatarLocalPath=req.file?.path
-
+  
+  avatar = await User.findById(req.user.avatar)
+  fs.unlinkSync(avatar);
+  
+  
   if(!avatarLocalPath){
     throw new ApiError(400,"avatar file is required")
   }
@@ -296,13 +305,18 @@ const updateUserAvatar = asyncHandler(async(req,res)=>{
 
 })
 
-export { registerUser, 
+
+
+
+export { 
+  registerUser, 
   loginUser, 
   logoutUser,
   refreshAccessToken ,
   getCurrentUser,
   changeCurrentUserPassword,
   updateAccountDetails,
-  updateUserAvatar
+  updateUserAvatar,
+
 
 }
